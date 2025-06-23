@@ -11,7 +11,7 @@ class BlinkLeds(Elaboratable):
         leds = [platform.request("led", i, dir="o") for i in range(8)]
         leds = Cat([led.o for led in leds])
 
-        timer = Signal(unsigned(26))
+        timer = Signal(unsigned(24))
         m.d.sync += timer.eq(timer + 1)
 
         csig = Signal(7, init=0b1)
@@ -29,15 +29,5 @@ class BlinkLeds(Elaboratable):
     
 if __name__ ==  "__main__":
     from alchitry_cu import AlchitryCuPlatform
-    column = ['E14', 'C14', 'C1', 'D3', 'G1', 'A6', 'A3']
-    row = ['A12', 'A1', 'A10', 'C9', 'E1']
-    column = " ".join(column)
-    row = " ".join(row)
     platform = AlchitryCuPlatform()
-
-    platform.add_resources([
-                               Resource("column", 0, Pins(column, dir="o"), Attrs(IO_STANDARD="LVCMOS")),
-                               Resource("row", 0, Pins(row, dir="o"), Attrs(IO_STANDARD="LVCMOS"))
-                           ])
-
     platform.build(BlinkLeds(), do_program=True)
